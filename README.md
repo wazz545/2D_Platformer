@@ -83,3 +83,9 @@ About Me
 
 I’m Warren, an aspiring game developer using Unity & C#.
 This project is part of my journey toward building professional games and working in the industry.
+
+
+## 📖 Development Log
+- 2025-09-24 → Initial commit (base 2D platformer uploaded)
+- 2025-09-25 → Added README.md, project setup
+- 2025-09-26 → 
