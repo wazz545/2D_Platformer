@@ -4,13 +4,14 @@ using System.Collections;
 
 public class AnimationStates : MonoBehaviour
 {
-    [Header("Config")]
+    [Header("Config Reference")]
     public CharacterConfig config;
 
-    [Header("Frames")]
+    [Header("Animation Frames")]
     public Image[] idleFrames;
     public Image[] walkFrames;
     public Image[] runFrames;
+    // Jump: [0]=rise1, [1]=rise2, [2]=rise3, [3]=apex, [4]=fall, [5]=land
     public Image[] jumpFrames;
     public Image[] restFrames;
     public Image[] throwFrames;
@@ -19,33 +20,36 @@ public class AnimationStates : MonoBehaviour
     public Image[] hitBackFrames;
 
     public enum State { Idle, Walk, Run, Jump, Rest, Throw, Push, HitBack, Stunned }
+    public State CurrentState => currentState;
 
     private State currentState = State.Idle;
-    public State CurrentState => currentState;
+    private State prevGroundedState = State.Idle;
 
     private Rigidbody2D rb;
     private float frameTimer;
     private int currentFrame;
     private float idleTimer;
-    private State prevGroundedState;
-    private float jumpDuration;
-    private float jumpStartTime;
-    private bool grounded;
-    private bool stunnedLocked = false;
 
-    // Throw helpers
+    private bool grounded;
+    private Coroutine landingRoutine;
+
+    // Air-throw helpers
     private bool airThrowOnce = false;
     private bool airThrowDone = false;
 
+    // Force a tiny fall flash so you always see fall before land if needed
+    private const float fallFlashMin = 0.05f;
+
     public bool IsThrowing => currentState == State.Throw;
 
-    public void SetRigidbody(Rigidbody2D body) { rb = body; }
+    // ---------- Setup ----------
+    public void SetRigidbody(Rigidbody2D body) => rb = body;
 
     public void SetGrounded(bool isGrounded)
     {
         grounded = isGrounded;
-        if (grounded && currentState == State.Jump)
-            StartCoroutine(Landing());
+        if (grounded && currentState == State.Jump && landingRoutine == null)
+            landingRoutine = StartCoroutine(LandingSequence());
     }
 
     void Start() => ShowFrame(idleFrames, 0);
@@ -62,64 +66,29 @@ public class AnimationStates : MonoBehaviour
                 AnimateLoop(idleFrames, config.idleRate);
                 break;
 
-            case State.Walk:
-                AnimateLoop(walkFrames, config.walkRate);
-                break;
+            case State.Walk: AnimateLoop(walkFrames, config.walkRate); break;
+            case State.Run: AnimateLoop(runFrames, config.runRate); break;
+            case State.Rest: AnimateOnceThenHold(restFrames, config.restRate); break;
 
-            case State.Run:
-                AnimateLoop(runFrames, config.runRate);
-                break;
-
-            case State.Rest:
-                AnimateOnceThenHold(restFrames, config.restRate);
-                break;
-
-            case State.Jump:
-                {
-                    float elapsed = Time.time - jumpStartTime;
-                    HandleJumpCycle(elapsed);
-                    break;
-                }
-
-            case State.Throw:
-                if (airThrowOnce)
-                {
-                    if (!airThrowDone)
-                    {
-                        AnimateOnceThenCallback(throwFrames, config.throwRate, () =>
-                        {
-                            airThrowDone = true;
-                            ShowFrame(throwFrames, throwFrames.Length - 1);
-                        });
-                    }
-                    else
-                    {
-                        ChangeState(State.Jump);
-                        ShowFrame(jumpFrames, 4);
-                    }
-                }
-                else
-                {
-                    AnimateLoop(throwFrames, config.throwRate);
-                }
-                break;
-
-            case State.Push:
-                AnimateLoop(pushFrames, config.pushRate);
-                break;
+            case State.Jump: HandleJumpCycle(); break;
+            case State.Throw: HandleThrowCycle(); break;
+            case State.Push: AnimateLoop(pushFrames, config.pushRate); break;
 
             case State.HitBack:
                 AnimateOnceThenCallback(hitBackFrames, config.hitBackRate, () => ChangeState(State.Stunned));
                 break;
 
             case State.Stunned:
-                if (!stunnedLocked)
-                    AnimateOnceThenHold(stunnedFrames, config.stunnedRate, () => stunnedLocked = true);
+                AnimateOnceThenHold(stunnedFrames, config.stunnedRate);
                 break;
         }
     }
 
-    private void HandleJumpCycle(float elapsed)
+    // ---------- Jump ----------
+    // -------------------
+    // Jump cycle
+    // -------------------
+    private void HandleJumpCycle()
     {
         if (jumpFrames == null || jumpFrames.Length != 6 || rb == null) return;
 
@@ -127,27 +96,67 @@ public class AnimationStates : MonoBehaviour
 
         if (!grounded && vy > 0f)
         {
-            if (elapsed < jumpDuration * 0.2f) ShowFrame(jumpFrames, 0);
-            else if (elapsed < jumpDuration * 0.4f) ShowFrame(jumpFrames, 1);
-            else if (elapsed < jumpDuration * 0.6f) ShowFrame(jumpFrames, 2);
-            else ShowFrame(jumpFrames, 3);
+            // Rising: 0→1→2→3 at jumpAnimRate
+            if (frameTimer >= config.jumpAnimRate)
+            {
+                frameTimer = 0f;
+                if (currentFrame < 3) currentFrame++;
+                ShowFrame(jumpFrames, currentFrame); // rise1, rise2, rise3, apex
+            }
         }
         else if (!grounded && vy <= 0f)
         {
+            // Falling: always force fall frame
             ShowFrame(jumpFrames, 4);
         }
     }
 
-    private IEnumerator Landing()
+    // -------------------
+    // Landing coroutine
+    // -------------------
+    private IEnumerator LandingSequence()
     {
+        // Always show land frame when grounded
         ShowFrame(jumpFrames, 5);
         yield return new WaitForSeconds(config.landingDelay);
 
+        landingRoutine = null;
+
+        // Restore state from before jump
         if (prevGroundedState == State.Run) ChangeState(State.Run);
         else if (prevGroundedState == State.Walk) ChangeState(State.Walk);
         else ChangeState(State.Idle);
     }
 
+
+    // ---------- Throw ----------
+    private void HandleThrowCycle()
+    {
+        if (airThrowOnce)
+        {
+            // Air throw: play once, then force fall
+            if (!airThrowDone)
+            {
+                AnimateOnceThenCallback(throwFrames, config.throwRate, () =>
+                {
+                    airThrowDone = true;
+                    ShowFrame(throwFrames, throwFrames.Length - 1);
+                });
+            }
+            else
+            {
+                ChangeState(State.Jump);
+                ShowFrame(jumpFrames, 4); // fall
+            }
+        }
+        else
+        {
+            // Ground throw loops while held
+            AnimateLoop(throwFrames, config.throwRate);
+        }
+    }
+
+    // ---------- Helpers ----------
     private void AnimateLoop(Image[] frames, float rate)
     {
         if (frames == null || frames.Length == 0) return;
@@ -165,14 +174,8 @@ public class AnimationStates : MonoBehaviour
         if (frameTimer >= rate)
         {
             frameTimer = 0f;
-            if (currentFrame < frames.Length - 1)
-            {
-                currentFrame++;
-            }
-            else
-            {
-                onComplete?.Invoke();
-            }
+            if (currentFrame < frames.Length - 1) currentFrame++;
+            else onComplete?.Invoke();
             ShowFrame(frames, currentFrame);
         }
     }
@@ -202,6 +205,14 @@ public class AnimationStates : MonoBehaviour
             frames[index].enabled = true;
     }
 
+    private int GetCurrentlyShownIndex(Image[] frames)
+    {
+        if (frames == null) return -1;
+        for (int i = 0; i < frames.Length; i++)
+            if (frames[i] != null && frames[i].enabled) return i;
+        return -1;
+    }
+
     private void DisableAll()
     {
         void Off(Image[] arr) { if (arr != null) foreach (var i in arr) if (i) i.enabled = false; }
@@ -209,6 +220,7 @@ public class AnimationStates : MonoBehaviour
         Off(restFrames); Off(throwFrames); Off(pushFrames); Off(stunnedFrames); Off(hitBackFrames);
     }
 
+    // ---------- State entry ----------
     public void ChangeState(State newState, bool onceThrow = false)
     {
         if (newState == currentState) return;
@@ -216,6 +228,12 @@ public class AnimationStates : MonoBehaviour
         if (newState == State.Jump &&
             (currentState == State.Idle || currentState == State.Walk || currentState == State.Run))
             prevGroundedState = currentState;
+
+        if (landingRoutine != null && newState != State.Jump)
+        {
+            StopCoroutine(landingRoutine);
+            landingRoutine = null;
+        }
 
         currentState = newState;
         airThrowOnce = (newState == State.Throw) && onceThrow;
@@ -229,7 +247,7 @@ public class AnimationStates : MonoBehaviour
             case State.Idle: ShowFrame(idleFrames, 0); break;
             case State.Walk: ShowFrame(walkFrames, 0); break;
             case State.Run: ShowFrame(runFrames, 0); break;
-            case State.Jump: ShowFrame(jumpFrames, 0); break;
+            case State.Jump: ShowFrame(jumpFrames, 0); break;  // rise1
             case State.Rest: ShowFrame(restFrames, 0); break;
             case State.Throw: ShowFrame(throwFrames, 0); break;
             case State.Push: ShowFrame(pushFrames, 0); break;
@@ -238,24 +256,21 @@ public class AnimationStates : MonoBehaviour
         }
     }
 
-    public void StartJump(float duration, float distance = 0f)
+    public void StartJump(float _ignoredDuration, float distance = 0f)
     {
-        jumpDuration = duration;
-        jumpStartTime = Time.time;
         ChangeState(State.Jump);
     }
 
     public void StartFall()
     {
         if (currentState == State.Throw && airThrowOnce) return;
-
         ChangeState(State.Jump);
-        ShowFrame(jumpFrames, 4);
+        ShowFrame(jumpFrames, 4); // fall
     }
 
     public void ResetFromStunned()
     {
-        stunnedLocked = false;
+        if (landingRoutine != null) { StopCoroutine(landingRoutine); landingRoutine = null; }
         ChangeState(State.Idle);
     }
 }

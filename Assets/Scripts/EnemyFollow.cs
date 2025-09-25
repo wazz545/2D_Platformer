@@ -6,21 +6,29 @@ public class EnemyFollow : MonoBehaviour
     public enum EnemyAttackType { Throw, Push, Both }
 
     [Header("References")]
-    public Transform target; // Player
+    [Tooltip("Who to chase/attack (usually the Player transform).")]
+    public Transform target;
 
-    [Header("Detection Settings")]
-    public float detectionRange = 10f;   // distance to notice player
-    public float attackRange = 2f;       // distance to attack
-    public float stopDistance = 1f;      // distance to stop pursuing
+    [Header("Detection")]
+    [Tooltip("How far away the enemy can notice the player.")]
+    public float detectionRange = 10f;
+    [Tooltip("At or inside this distance, the enemy starts attacking.")]
+    public float attackRange = 2f;
+    [Tooltip("Stop moving toward the player when this close (prevents jitter).")]
+    public float stopDistance = 1f;
 
-    [Header("Patrol Settings")]
-    public Transform[] patrolPoints;     // multiple patrol points
-    public float patrolSpeed = 2f;
-    public float waitAtPatrolPoint = 2f; // wait at each point
-    public float patrolStopDistance = 0.5f; // distance considered "arrived"
+    [Header("Patrol")]
+    [Tooltip("Waypoints to patrol in a loop. Leave empty to disable patrol.")]
+    public Transform[] patrolPoints;
+    [Tooltip("Seconds to wait (idle) when arriving at a patrol point.")]
+    public float waitAtPatrolPoint = 2f;
+    [Tooltip("Within this radius, the enemy considers the patrol point reached.")]
+    public float patrolStopDistance = 0.5f;
 
-    [Header("Attack Settings")]
+    [Header("Attack")]
+    [Tooltip("Choose the enemy's attack behavior.")]
     public EnemyAttackType attackType = EnemyAttackType.Both;
+    [Tooltip("Cooldown between attack attempts (seconds).")]
     public float attackCooldown = 1.5f;
 
     private CharacterMovement movement;
@@ -38,6 +46,8 @@ public class EnemyFollow : MonoBehaviour
 
         if (patrolPoints != null && patrolPoints.Length > 0)
             currentPatrolIndex = 0;
+        else
+            currentState = State.Pursue; // no patrol points → idle until detecting player
     }
 
     void Update()
@@ -58,8 +68,8 @@ public class EnemyFollow : MonoBehaviour
                 PursuePlayer(distanceToPlayer);
                 if (distanceToPlayer <= attackRange)
                     currentState = State.Attack;
-                else if (distanceToPlayer > detectionRange * 1.5f) // lost player
-                    currentState = State.Patrol;
+                else if (patrolPoints != null && patrolPoints.Length > 0 && distanceToPlayer > detectionRange * 1.5f)
+                    currentState = State.Patrol; // lost player → back to patrol
                 break;
 
             case State.Attack:
@@ -70,9 +80,7 @@ public class EnemyFollow : MonoBehaviour
         }
     }
 
-    // -------------------
-    // Patrol logic
-    // -------------------
+    // ---------- Patrol ----------
     private void Patrol()
     {
         if (patrolPoints == null || patrolPoints.Length == 0) return;
@@ -80,7 +88,6 @@ public class EnemyFollow : MonoBehaviour
         Transform patrolTarget = patrolPoints[currentPatrolIndex];
         float distanceToTarget = Vector2.Distance(transform.position, patrolTarget.position);
 
-        // Walk toward patrol point
         if (distanceToTarget > patrolStopDistance && patrolWaitTimer <= 0f)
         {
             float dir = patrolTarget.position.x > transform.position.x ? 1 : -1;
@@ -89,22 +96,18 @@ public class EnemyFollow : MonoBehaviour
         else
         {
             // At patrol point → idle + wait
-            movement.GetComponent<AnimationStates>().ChangeState(AnimationStates.State.Idle);
+            GetComponent<AnimationStates>().ChangeState(AnimationStates.State.Idle);
 
             patrolWaitTimer += Time.deltaTime;
-
             if (patrolWaitTimer >= waitAtPatrolPoint)
             {
-                // Next point (loop around)
                 currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
                 patrolWaitTimer = 0f;
             }
         }
     }
 
-    // -------------------
-    // Pursue logic
-    // -------------------
+    // ---------- Pursue ----------
     private void PursuePlayer(float distance)
     {
         if (distance > stopDistance)
@@ -114,51 +117,48 @@ public class EnemyFollow : MonoBehaviour
         }
         else
         {
-            // idle near player
-            movement.GetComponent<AnimationStates>().ChangeState(AnimationStates.State.Idle);
+            GetComponent<AnimationStates>().ChangeState(AnimationStates.State.Idle);
         }
     }
 
-    // -------------------
-    // Attack logic
-    // -------------------
+    // ---------- Attack ----------
     private void AttackPlayer(float distance)
     {
-        if (Time.time - lastAttackTime < attackCooldown)
-            return; // cooldown active
+        if (Time.time - lastAttackTime < attackCooldown) return;
 
-        bool grounded = Mathf.Abs(movement.GetComponent<Rigidbody2D>().velocity.y) < 0.01f;
+        // Face player first
+        float dir = target.position.x > transform.position.x ? 1 : -1;
+        transform.localScale = new Vector3(dir > 0 ? 1 : -1, 1, 1);
 
         if (attackType == EnemyAttackType.Throw || attackType == EnemyAttackType.Both)
-        {
-            movement.AIThrow();
-            // NOTE: AnimationStates already decides idle-loop vs air-throw
-        }
+            movement.AIThrow(); // ground-throw loops; air-throw is one-shot then fall → handled by AnimationStates
 
         if (attackType == EnemyAttackType.Push || attackType == EnemyAttackType.Both)
-        {
-            float direction = target.position.x > transform.position.x ? 1 : -1;
-            movement.AIPush(direction);
-        }
+            movement.AIPush(dir);
 
         lastAttackTime = Time.time;
     }
 
-    // -------------------
-    // Draw patrol path in editor (debug)
-    // -------------------
+    // ---------- Debug Gizmos ----------
     void OnDrawGizmosSelected()
     {
+        // Patrol path
         if (patrolPoints != null && patrolPoints.Length > 1)
         {
             Gizmos.color = Color.yellow;
             for (int i = 0; i < patrolPoints.Length; i++)
             {
-                Vector3 current = patrolPoints[i].position;
-                Vector3 next = patrolPoints[(i + 1) % patrolPoints.Length].position;
-                Gizmos.DrawLine(current, next);
-                Gizmos.DrawSphere(current, 0.2f);
+                Vector3 a = patrolPoints[i].position;
+                Vector3 b = patrolPoints[(i + 1) % patrolPoints.Length].position;
+                Gizmos.DrawLine(a, b);
+                Gizmos.DrawSphere(a, 0.12f);
             }
         }
+
+        // Detection & attack radii
+        Gizmos.color = new Color(0f, 0.6f, 1f, 0.25f);
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
+        Gizmos.color = new Color(1f, 0.2f, 0.2f, 0.25f);
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

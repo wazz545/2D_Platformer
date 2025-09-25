@@ -12,30 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c818454328c21f44b86dce4d5079b0a3, type: 3}
   m_Name: Enemy 1
   m_EditorClassIdentifier: 
-  walkSpeed: 250
-  runSpeed: 250
+  walkSpeed: 15
+  runSpeed: 30
   pushSpeed: 2
-  walkJumpForce: 10
-  runJumpForce: 14
+  walkJumpForce: 100
+  runJumpForce: 140
   doubleJumpForce: 8
-  allowDoubleJump: 1
-  walkJumpTime: 0.6
-  runJumpTime: 0.9
-  coyoteTime: 0.1
-  gravityScale: 400
+  allowDoubleJump: 0
+  gravityScale: 40
   airControl: 3
   groundMask:
     serializedVersion: 2
-    m_Bits: 96
-  groundCheckDistance: 0.1
-  throwRate: 0.15
+    m_Bits: 64
+  groundCheckDistance: 7.21
+  coyoteTime: 0.1
   idleRate: 0.3
   walkRate: 0.2
   runRate: 0.1
+  jumpAnimRate: 0
   restRate: 0.4
-  pushRate: 0.14
+  pushRate: 0.18
   stunnedRate: 0.25
   hitBackRate: 0.2
+  throwRate: 0.15
   restDelay: 5
   landingDelay: 0.1
-  jumpDistance: 2.0387359
+  jumpDistance: 0

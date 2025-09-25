@@ -8,13 +8,57 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 95429638867136949, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 95429638867136949, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 95429638867136949, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 95429638867136949, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 442948510841463013, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_Size.x
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 442948510841463013, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_Size.y
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 442948510841463013, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_EdgeRadius
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 442948510841463013, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_IncludeLayers.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 922800089497490369, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: config
+      value: 
+      objectReference: {fileID: 11400000, guid: 1cef6a78718238741b92c8dc9ab4c2b2, type: 2}
+    - target: {fileID: 922800089497490369, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: isPlayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1152837992458244718, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: config
+      value: 
+      objectReference: {fileID: 11400000, guid: 1cef6a78718238741b92c8dc9ab4c2b2, type: 2}
     - target: {fileID: 1589294956426433719, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1589294956426433719, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
       propertyPath: m_Pivot.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1589294956426433719, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
       propertyPath: m_AnchorMax.x
@@ -22,7 +66,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1589294956426433719, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1589294956426433719, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
       propertyPath: m_AnchorMin.x
@@ -30,7 +74,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1589294956426433719, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1589294956426433719, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
       propertyPath: m_SizeDelta.x
@@ -70,11 +114,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1589294956426433719, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 1589294956426433719, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -441.67
       objectReference: {fileID: 0}
     - target: {fileID: 1589294956426433719, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -91,6 +135,30 @@ PrefabInstance:
     - target: {fileID: 6602238963988659852, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
       propertyPath: m_Name
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 7754051219453529279, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_Size.x
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7754051219453529279, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_Size.y
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7754051219453529279, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_Offset.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7754051219453529279, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_EdgeRadius
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8061396438824143953, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_Mass
+      value: 179.19084
+      objectReference: {fileID: 0}
+    - target: {fileID: 8061396438824143953, guid: 7f4a0cd88dd7233419bc8e12655af253, type: 3}
+      propertyPath: m_IncludeLayers.m_Bits
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -118,7 +186,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  stopDistance: 1
-  allowJump: 1
-  allowThrow: 1
-  allowPush: 1
+  detectionRange: 30
+  attackRange: 2
+  stopDistance: 2
+  patrolPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  patrolSpeed: 5
+  waitAtPatrolPoint: 2
+  patrolStopDistance: 10
+  attackType: 0
+  attackCooldown: 0.2

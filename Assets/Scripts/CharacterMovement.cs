@@ -5,10 +5,12 @@ public class CharacterMovement : MonoBehaviour
 {
     [Header("Config")]
     public CharacterConfig config;
-    public bool isPlayer = true;   // Toggle: Player uses input, Enemy uses AI
+    [Tooltip("If true, reads keyboard input. If false, expect AI calls.")]
+    public bool isPlayer = true;
 
     private AnimationStates anim;
     private Rigidbody2D rb;
+
     private bool isGrounded;
     private bool canDoubleJump;
     private float coyoteTimer;
@@ -17,7 +19,6 @@ public class CharacterMovement : MonoBehaviour
     {
         anim = GetComponent<AnimationStates>();
         rb = GetComponent<Rigidbody2D>();
-
         rb.gravityScale = config.gravityScale;
         anim.SetRigidbody(rb);
     }
@@ -25,11 +26,10 @@ public class CharacterMovement : MonoBehaviour
     void Update()
     {
         GroundCheck();
-
-        if (isPlayer)
-            HandlePlayerInput();
+        if (isPlayer) HandlePlayerInput();
     }
 
+    // -------- Ground Check --------
     private void GroundCheck()
     {
         bool hitGround = Physics2D.Raycast(transform.position, Vector2.down, config.groundCheckDistance, config.groundMask);
@@ -47,9 +47,7 @@ public class CharacterMovement : MonoBehaviour
         anim.SetGrounded(isGrounded);
     }
 
-    // ======================
-    // Player Input
-    // ======================
+    // -------- Player Input --------
     private void HandlePlayerInput()
     {
         float move = Input.GetAxisRaw("Horizontal");
@@ -57,14 +55,9 @@ public class CharacterMovement : MonoBehaviour
         bool push = Input.GetKey(KeyCode.E);
 
         // Throw
-        if (Input.GetKey(KeyCode.F))
-        {
-            DoThrow();
-        }
+        if (Input.GetKey(KeyCode.F)) DoThrow();
         else if (anim.CurrentState == AnimationStates.State.Throw && isGrounded)
-        {
             ReturnToGrounded(move, run);
-        }
 
         if (anim.IsThrowing)
         {
@@ -85,21 +78,14 @@ public class CharacterMovement : MonoBehaviour
         // Jump
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (isGrounded || coyoteTimer > 0f)
-            {
-                DoJump(run, move);
-            }
-            else if (config.allowDoubleJump && canDoubleJump)
-            {
-                DoDoubleJump(move);
-            }
+            if (isGrounded || coyoteTimer > 0f) DoJump(run, move);
+            else if (config.allowDoubleJump && canDoubleJump) DoDoubleJump(move);
         }
 
-        // Knockback test
-        if (Input.GetKeyDown(KeyCode.K))
-            anim.ChangeState(AnimationStates.State.HitBack);
+        // Knockback test (optional)
+        if (Input.GetKeyDown(KeyCode.K)) anim.ChangeState(AnimationStates.State.HitBack);
 
-        // Fall off ledge
+        // Start falling anim when leaving ledge (and not in Throw)
         if (!isGrounded && rb.velocity.y < 0 &&
             anim.CurrentState != AnimationStates.State.Jump &&
             anim.CurrentState != AnimationStates.State.Throw)
@@ -108,54 +94,42 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    // ======================
-    // Shared Movement
-    // ======================
+    // -------- Shared Actions --------
     private void HandleMove(float move, bool run, bool isThrowing)
     {
-        if (anim.CurrentState != AnimationStates.State.Jump &&
-            anim.CurrentState != AnimationStates.State.Stunned &&
-            anim.CurrentState != AnimationStates.State.HitBack)
-        {
-            if (move != 0)
-            {
-                float speed = run ? config.runSpeed : config.walkSpeed;
-                if (isThrowing && !isGrounded) speed = config.airControl;
+        if (anim.CurrentState == AnimationStates.State.Stunned ||
+            anim.CurrentState == AnimationStates.State.HitBack) return;
 
-                transform.Translate(new Vector2(move * speed * Time.deltaTime, 0f));
-                transform.localScale = new Vector3(move > 0 ? 1 : -1, 1, 1);
-
-                if (!isThrowing)
-                    anim.ChangeState(run ? AnimationStates.State.Run : AnimationStates.State.Walk);
-            }
-            else if (isGrounded && !isThrowing)
-            {
-                anim.ChangeState(AnimationStates.State.Idle);
-            }
-        }
-        else if (anim.CurrentState == AnimationStates.State.Jump && move != 0)
+        if (move != 0)
         {
-            float airSpeed = config.airControl * Time.deltaTime;
-            transform.Translate(new Vector2(move * airSpeed, 0f));
+            float speed = run ? config.runSpeed : config.walkSpeed;
+            if (isThrowing && !isGrounded) speed = config.airControl;
+
+            transform.Translate(new Vector2(move * speed * Time.deltaTime, 0f));
             transform.localScale = new Vector3(move > 0 ? 1 : -1, 1, 1);
+
+            if (!isThrowing && anim.CurrentState != AnimationStates.State.Jump)
+                anim.ChangeState(run ? AnimationStates.State.Run : AnimationStates.State.Walk);
+        }
+        else if (isGrounded && !isThrowing && anim.CurrentState != AnimationStates.State.Jump)
+        {
+            anim.ChangeState(AnimationStates.State.Idle);
         }
     }
 
     private void ReturnToGrounded(float move, bool run)
     {
         if (!isGrounded) anim.ChangeState(AnimationStates.State.Jump);
-        else if (Mathf.Abs(move) > 0)
-            anim.ChangeState(run ? AnimationStates.State.Run : AnimationStates.State.Walk);
-        else
-            anim.ChangeState(AnimationStates.State.Idle);
+        else if (Mathf.Abs(move) > 0) anim.ChangeState(run ? AnimationStates.State.Run : AnimationStates.State.Walk);
+        else anim.ChangeState(AnimationStates.State.Idle);
     }
 
     private void DoThrow()
     {
         if (isGrounded && anim.CurrentState == AnimationStates.State.Idle)
-            anim.ChangeState(AnimationStates.State.Throw, false); // loop
+            anim.ChangeState(AnimationStates.State.Throw, false); // ground loop
         else if (!isGrounded && anim.CurrentState == AnimationStates.State.Jump)
-            anim.ChangeState(AnimationStates.State.Throw, true);  // once
+            anim.ChangeState(AnimationStates.State.Throw, true);  // air once → fall
     }
 
     private void DoPush(float move)
@@ -171,18 +145,14 @@ public class CharacterMovement : MonoBehaviour
     private void DoJump(bool running, float move)
     {
         float jumpForce = running ? config.runJumpForce : config.walkJumpForce;
-        float jumpTime = running ? config.runJumpTime : config.walkJumpTime;
         float speed = running ? config.runSpeed : config.walkSpeed;
 
         rb.velocity = new Vector2(move * speed, jumpForce);
-
         isGrounded = false;
         canDoubleJump = config.allowDoubleJump;
 
-        float distance = CalculateJumpDistance(jumpForce, speed);
-        config.jumpDistance = distance;
-
-        anim.StartJump(jumpTime, distance);
+        config.jumpDistance = CalculateJumpDistance(jumpForce, speed);
+        anim.StartJump(0f, config.jumpDistance);
     }
 
     private void DoDoubleJump(float move)
@@ -190,10 +160,8 @@ public class CharacterMovement : MonoBehaviour
         rb.velocity = new Vector2(move * config.walkSpeed, config.doubleJumpForce);
         canDoubleJump = false;
 
-        float distance = CalculateJumpDistance(config.doubleJumpForce, config.walkSpeed);
-        config.jumpDistance = distance;
-
-        anim.StartJump(config.walkJumpTime, distance);
+        config.jumpDistance = CalculateJumpDistance(config.doubleJumpForce, config.walkSpeed);
+        anim.StartJump(0f, config.jumpDistance);
     }
 
     private float CalculateJumpDistance(float jumpForce, float horizSpeed)
@@ -203,32 +171,10 @@ public class CharacterMovement : MonoBehaviour
         return horizSpeed * totalAirTime;
     }
 
-    // ======================
-    // AI Control Methods
-    // ======================
-    public void MoveAI(float direction, bool run)
-    {
-        HandleMove(direction, run, false);
-    }
-
-    public void AIThrow()
-    {
-        DoThrow();
-    }
-
-    public void AIPush(float direction)
-    {
-        DoPush(direction);
-    }
-
-    public void AIJump(bool running, float direction)
-    {
-        DoJump(running, direction);
-    }
-
-    public void AIDoubleJump(float direction)
-    {
-        if (config.allowDoubleJump && canDoubleJump)
-            DoDoubleJump(direction);
-    }
+    // -------- AI Control Hooks --------
+    public void MoveAI(float direction, bool run) => HandleMove(direction, run, false);
+    public void AIThrow() => DoThrow();
+    public void AIPush(float direction) => DoPush(direction);
+    public void AIJump(bool running, float direction) => DoJump(running, direction);
+    public void AIDoubleJump(float direction) { if (config.allowDoubleJump && canDoubleJump) DoDoubleJump(direction); }
 }

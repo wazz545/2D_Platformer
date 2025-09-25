@@ -12,30 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c818454328c21f44b86dce4d5079b0a3, type: 3}
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
-  walkSpeed: 200
-  runSpeed: 500
-  pushSpeed: 75
-  walkJumpForce: 1200
-  runJumpForce: 1500
-  doubleJumpForce: 1200
+  walkSpeed: 15
+  runSpeed: 30
+  pushSpeed: 13
+  walkJumpForce: 135
+  runJumpForce: 150
+  doubleJumpForce: 100
   allowDoubleJump: 1
-  walkJumpTime: 500
-  runJumpTime: 500
-  coyoteTime: 0.02
-  gravityScale: 400
-  airControl: 100
+  gravityScale: 40
+  airControl: 3
   groundMask:
     serializedVersion: 2
-    m_Bits: 96
-  groundCheckDistance: 0.2
-  throwRate: 0.15
+    m_Bits: 192
+  groundCheckDistance: 7.03
+  coyoteTime: 0.2
   idleRate: 0.3
-  walkRate: 0.1
-  runRate: 0.05
+  walkRate: 0.2
+  runRate: 0.1
+  jumpAnimRate: 0.02
   restRate: 0.4
-  pushRate: 0.2
+  pushRate: 0.18
   stunnedRate: 0.25
   hitBackRate: 0.2
+  throwRate: 0.15
   restDelay: 5
   landingDelay: 0.1
-  jumpDistance: 122.32416
+  jumpDistance: 7.6452594
