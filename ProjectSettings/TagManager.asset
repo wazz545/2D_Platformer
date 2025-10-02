@@ -5,6 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Feet
+  - Block
+  - Ground
+  - Fireball_Shoot_Pos
+  - Rock_Shoot_Pos
+  - PlayerHealthBar
+  - PlayerManaBar
+  - AI_Character
   layers:
   - Default
   - TransparentFX
@@ -14,8 +21,8 @@ TagManager:
   - UI
   - Ground
   - Block
-  - 
-  - 
+  - Player
+  - Enemy
   - 
   - 
   - 

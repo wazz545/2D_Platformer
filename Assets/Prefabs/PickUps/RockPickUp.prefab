@@ -1,0 +1,162 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &3968473619717413394
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -3129933850381943449, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 847157484599930672, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_Name
+      value: RockPickUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558185753816207900, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 7343340574053642547, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 847157484599930672, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5888429627512030326}
+    - targetCorrespondingSourceObject: {fileID: 847157484599930672, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3074891183997833198}
+  m_SourcePrefab: {fileID: 100100000, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+--- !u!1 &4382966182352237858 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 847157484599930672, guid: 9f1644c205e72924f87ebf67e877839a, type: 3}
+  m_PrefabInstance: {fileID: 3968473619717413394}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-5888429627512030326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4382966182352237858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fadac8c52f38184bbb408468bbba741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!58 &3074891183997833198
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4382966182352237858}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: e289eaa652986d948aee886f9de1b601, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.2}
+  serializedVersion: 2
+  m_Radius: 1.59
