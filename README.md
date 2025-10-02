@@ -5,16 +5,24 @@ This repository tracks my step-by-step journey as I build mechanics, polish game
 
 ---
 
+## 🔄 What’s New in This Version
+- ✔️ Animations now auto-load from **Resources folder** (no more manual inspector setup)
+- ✔️ Introduced **ScriptableObjects** for cleaner data handling and reusability
+- ✔️ Refactored scripts for simplicity and scalability
+- ✔️ Improved Enemy AI with **patrol, chase, and attack states**
+- ✔️ Idle → Rest logic added for more realistic character behavior
+- ✔️ Separated **Canvas/UI levels and stages** into a reusable Unity package
+- ✔️ Configurable walk/run speeds and jump height directly in the **Character Inspector**
+
+---
+
 ## ✅ Current Features
 - ✔️ Player movement (walk, run, jump, push, throw)
-- ✔️ Configurable speeds & jump height directly from **Character Inspector**
-- ✔️ Animations now auto-load from **Resources folder** (no manual inspector setup)
-- ✔️ Character data handled via **ScriptableObjects** for clean modular design
-- ✔️ Enemy AI with patrol, chase, and attack states
-- ✔️ Idle / rest logic for both player and AI
 - ✔️ Feet collider for grounded detection
 - ✔️ Blocks and ground layers properly configured
-- ✔️ Modular **Canvas/UI** and level stages packaged as a separate Unity package
+- ✔️ Character stats optionally handled with ScriptableObjects
+- ✔️ Modular UI hierarchy set up in scene
+- ✔️ Enemy AI patrol with idle wait at patrol points
 
 ---
 
@@ -44,3 +52,4 @@ The aim is to demonstrate:
 - Growing game design understanding  
 
 This repo is also part of my **portfolio and employment journey**, showing how I evolve mechanics and structure over time.  
+****
